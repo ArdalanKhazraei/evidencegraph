@@ -1,0 +1,8 @@
+# Ignore everything here
+*
+
+# Keep this file to track the folder
+!.gitignore
+
+# Explicitly allow the subfolder to be "seen" by Git
+!edge/

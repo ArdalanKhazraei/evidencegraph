@@ -4,7 +4,7 @@ VIRTUALENV_DIR=./env
 CORPUS_DIR=./data/corpus
 
 virtualenv:
-	if [ ! -e ${VIRTUALENV_DIR}/bin/pip ]; then python3 -m venv ${VIRTUALENV_DIR}; fi
+	if [ ! -e ${VIRTUALENV_DIR}/bin/pip ]; then python3.8 -m venv ${VIRTUALENV_DIR}; fi
 
 install-requirements: virtualenv
 	${VIRTUALENV_DIR}/bin/pip install --upgrade pip
@@ -41,3 +41,76 @@ eval-minimal-en:
 
 eval-minimal-de:
 	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python src/experiments/eval_minimal.py -c m112de | tee data/m112de-test-evaluation.log
+	
+
+
+############################################################################################################################################################
+
+CORPUS = c
+
+generate-folds:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python generate_folds.py
+
+compile-attention-features:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python compile_attention_features.py --regular
+
+compile-attention-features-large:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python compile_attention_features.py --large --regular
+
+train-eg:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python train_eg.py --corpus $(CORPUS)
+	
+train-neural:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python train_neural.py --corpus $(CORPUS)
+	
+train-neural-large:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python train_neural.py --large --corpus $(CORPUS)
+	
+optimize-weights-eg:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python weight_opt_eg.py --corpus $(CORPUS)
+	
+optimize-weights-neural:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python weight_opt_neural.py --corpus $(CORPUS)
+	
+optimize-weights-neural-large:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python weight_opt_neural.py --large --corpus $(CORPUS)
+
+eval-eg:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python eval_eg.py --corpus $(CORPUS) --eval_base --eval_mst --weight_opt
+
+eval-neural:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python eval_neural.py --corpus $(CORPUS) --eval_base --eval_mst --weight_opt
+
+eval-neural-large:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python eval_neural.py --large --corpus $(CORPUS) --eval_base --eval_mst --weight_opt
+
+
+
+
+layer-ablation-single:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python layer.py --corpus $(CORPUS) --level $(LEVEL)
+
+layer-ablation-all:
+	$(MAKE) layer-ablation-single LEVEL=at;
+	$(MAKE) layer-ablation-single LEVEL=cc;
+	$(MAKE) layer-ablation-single LEVEL=fu;
+	$(MAKE) layer-ablation-single LEVEL=ro;
+
+attention-ablation:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python at_ablation.py
+
+edge-eval-eg:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python edge_eg.py --corpus $(CORPUS) --eval_base --eval_mst --weight_opt
+
+edge-eval-neural:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python edge_neural.py --corpus $(CORPUS) --eval_base --eval_mst --weight_opt
+
+edge-eval-neural-large:
+	stdbuf -o 0 ${VIRTUALENV_DIR}/bin/python edge_neural.py --corpus $(CORPUS) --large --eval_base --eval_mst --weight_opt
+
+
+
+
+
+
+

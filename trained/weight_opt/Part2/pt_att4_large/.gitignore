@@ -1,0 +1,5 @@
+# Ignore all files inside this subfolder
+*
+
+# Keep this file so the subfolder stays in Git
+!.gitignore
