@@ -174,6 +174,7 @@ if __name__ == '__main__':
             result += "micro avg " + str(np.mean(wo_miF1s[l])) + u" \u00B1 " + str(np.std(wo_miF1s[l])/np.sqrt(len(wo_miF1s[l])-1))
     
     print(result)
+    print()
     
     with open(f'evaluations/{"large" if large else "base"}_{corpus}', 'w') as f:
         f.write(result)

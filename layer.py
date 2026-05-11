@@ -40,6 +40,10 @@ L = 12 if level == "at" else 13
 if __name__ == '__main__':
     for layer in range(L):
         
+        model_path = root_dir + str(layer) + "/"
+        if os.path.isdir(model_path) and os.path.isfile(model_path+"evals.txt"):
+            continue
+        
         print("layer", layer)
 
         feats_dict = edge_feats(large, layer) if level == "at" else node_feats(corpus, large, layer)
@@ -55,7 +59,6 @@ if __name__ == '__main__':
         maF1s = []
         miF1s = []
         
-        model_path = root_dir + str(layer) + "/"
         print("model path =", model_path)
         if not os.path.isdir(model_path):
             os.mkdir(model_path)

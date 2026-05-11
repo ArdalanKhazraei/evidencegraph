@@ -144,6 +144,7 @@ if __name__ == '__main__':
             result += "accuracy avg " + str(np.mean(wo_accs[l])) + u" \u00B1 " + str(np.std(wo_accs[l])/np.sqrt(len(wo_accs[l])-1))
     
     print(result)
+    print()
     
     with open(f'evaluations/edge/eg_{corpus}', 'w') as f:
         f.write(result)
